@@ -7,12 +7,15 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "scss-watch": "sass --watch src/styles/scss:src/styles/css --no-source-map",
+    "scss-build": "sass src/styles/scss:src/styles/css --style compressed"
   },
   "dependencies": {
     "axios": "^1.8.4",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.5.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",

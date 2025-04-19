@@ -1,0 +1,25 @@
+@charset "UTF-8";
+@import url("https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&family=Russo+One&display=swap");
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  flex: 1;
+  box-sizing: border-box;
+  padding-top: 60px;
+}
+.content .title-h1 {
+  font-family: "Russo One", Inter, sans-serif;
+  color: white;
+  font-size: 64px;
+  text-shadow: 0 4px 4px rgba(0, 0, 0, 0.5); /* Горизонталь Вертикаль Размытие Цвет */
+  letter-spacing: 3px;
+}
+.content .title-h2 {
+  font-family: Inter, sans-serif;
+  color: white;
+  font-size: 26px;
+  text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25); /* Горизонталь Вертикаль Размытие Цвет */
+  letter-spacing: 2px;
+}

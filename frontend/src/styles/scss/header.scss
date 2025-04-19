@@ -1,0 +1,18 @@
+@use "variables/colors.scss" as colors;
+
+.header-wrapper {
+  width: 100vw;
+  height: 80px;
+
+  background-color: colors.$headerBg;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.header-icon-site {
+  height: 90%;
+  width: auto;
+}

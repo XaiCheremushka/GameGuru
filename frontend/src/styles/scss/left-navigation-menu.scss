@@ -1,0 +1,58 @@
+@use "variables/colors.scss" as colors;
+
+#left-navigation-menu {
+  display: flex;
+  flex-direction: column;
+  border-radius: 0 10px 10px 0;
+  border-width: 0;
+
+  width: 220px;
+  height: 100%;
+
+  background-color: colors.$navMenuBg;
+  box-shadow: 0 4px 4px 4px rgba(0, 0, 0, 0.2);
+}
+
+.nav-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  width: 100%;
+
+  list-style: none;
+}
+
+.nav-menu-element {
+  display: flex;
+  flex-direction: row;
+  border-radius: 0 10px 10px 0;
+  border-width: 0;
+  box-sizing: border-box;
+  transition: background-color ease 0.18s;
+
+  width: 100%;
+  height: 50px;
+
+
+  &:hover {
+    background-color: colors.$navMenuElementActiveBg;
+  }
+
+  &.menu-element--active {
+    background-color: colors.$navMenuElementHoverBg;
+  }
+
+  a {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    padding-left: 30px;
+
+    color: black;
+    width: 100%;
+    height: 100%;
+
+  }
+}

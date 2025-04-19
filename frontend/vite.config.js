@@ -8,5 +8,8 @@ export default defineConfig({
     proxy: {
       '/api': 'http://localhost:8090'  // Настройка прокси для PHP-бэкенда
     }
+  },
+  resolve: {
+    extensions: ['.js', '.jsx']
   }
 })
