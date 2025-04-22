@@ -1,16 +1,18 @@
 import React from "react";
-import {Route, Routes} from "react-router-dom";
+import { Route, Routes, useParams } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import ListPage from "./pages/ListPage.jsx";
+
+function ListPageWrapper() {
+    const { pageType } = useParams();
+    return <ListPage key={pageType} chapterMenu={pageType} />;
+}
 
 function RoutesApp() {
     return (
         <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/categories/" element={<ListPage chapterMenu="categories" />} />
-            <Route path="/genres/" element={<ListPage chapterMenu="genres" />} />
-            <Route path="/games/" element={<ListPage chapterMenu="games" />} />
-            <Route path="/developers/" element={<ListPage chapterMenu="developers" />} />
+            <Route path="/:pageType" element={<ListPageWrapper />} />
         </Routes>
     )
 }

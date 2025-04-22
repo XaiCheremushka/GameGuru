@@ -1,13 +1,17 @@
-const categoriesList = [
-    {title: "Мультиплеер", description: "Режим игры для нескольких игроков."},
-    {title: "Кооператив", description: "Режим игры для двух или четырех игроков."},
-    {title: "Синглплеер", description: "Режим игры для одного игрока."}
+import cooperative from "../assets/items/categories/Cooperative.jpg";
+import multiplayer from "../assets/items/categories/Multiplayer.jpg";
+import singleplayer from "../assets/items/categories/Singleplayer.jpg";
+
+export const categoriesList = [
+    {title: "Мультиплеер", description: "Режим игры для нескольких игроков.", img: cooperative},
+    {title: "Кооператив", description: "Режим игры для двух или четырех игроков.", img: multiplayer},
+    {title: "Синглплеер", description: "Режим игры для одного игрока.", img: singleplayer}
 ]
 
-const genresList = [
+export const genresList = [
     {
         title: "RPG",
-        description: "Игры, где игрок управляет персонажем, развивает его навыки и следует сюжету."
+        description: "Игры, где игрок управляет персонажем, развивает его навыки и следует сюжету.",
     },
     {
         title: "Шутер (FPS)",
@@ -31,7 +35,7 @@ const genresList = [
     }
 ];
 
-const developersList = [
+export const developersList = [
     {
         title: "Rockstar Games",
         description: "Британско-американская компания. Rockstar известна своими детализированными открытыми мирами и насыщенными сюжетами."
@@ -58,7 +62,7 @@ const developersList = [
     }
 ];
 
-const gamesList = [
+export const gamesList = [
     {
         title: "The Witcher 3: Wild Hunt",
         description: "Ролевая игра с открытым миром, где вы играете за Геральта из Ривии, охотника на чудовищ. Игра славится своим глубоким сюжетом, моральными выборами и детализированным миром."
