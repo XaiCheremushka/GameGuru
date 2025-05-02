@@ -27,8 +27,8 @@ const AnimatedBackground = () => {
         let ball = {
             x: canvas.width / 2,
             y: canvas.height / 2,
-            dx: 10,
-            dy: 10,
+            dx: 9,
+            dy: 9,
             size: ballSize
         };
 
@@ -66,7 +66,7 @@ const AnimatedBackground = () => {
 
         // Функция отрисовки
         const draw = () => {
-            time += 0.023;
+            time += 0.026;
 
             // Очищаем canvas
             ctx.fillStyle = 'transparent';

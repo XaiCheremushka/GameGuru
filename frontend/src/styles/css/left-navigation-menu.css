@@ -8,6 +8,11 @@
   background-color: white;
   box-shadow: 0 4px 4px 4px rgba(0, 0, 0, 0.2);
 }
+@media (max-width: 800px) {
+  #left-navigation-menu {
+    display: none;
+  }
+}
 
 .nav-menu {
   display: flex;

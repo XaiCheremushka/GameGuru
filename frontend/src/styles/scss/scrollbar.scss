@@ -1,0 +1,39 @@
+@use "variables/colors" as colors;
+
+.scrollbar {
+  overflow-y: auto; /* или auto */
+  overflow-x: hidden; /* или auto */
+  transition: overflow-y 0.3s; /* Плавное появление скроллбара */
+  //background-color: transparent;
+  //padding-right: 3px;
+  box-sizing: border-box;
+
+  &::-webkit-scrollbar {
+    width: 14px;
+    transition: opacity 0.3s ease;
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: colors.$trackScrollbar;
+    border-radius: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: colors.$thumbScrollbar;
+    border-radius: 8px;
+    border: 1px solid colors.$trackScrollbar; /* Отступ между бегунком и треком */
+
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: colors.$thumbHoverScrollbar; /* Цвет бегунка при наведении */
+  }
+
+  @media(max-width: 800px) {
+    &::-webkit-scrollbar  {
+      width: 0;
+    }
+  }
+}
+

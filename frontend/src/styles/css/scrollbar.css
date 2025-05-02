@@ -1,0 +1,29 @@
+@charset "UTF-8";
+.scrollbar {
+  overflow-y: auto; /* или auto */
+  overflow-x: hidden; /* или auto */
+  transition: overflow-y 0.3s; /* Плавное появление скроллбара */
+  box-sizing: border-box;
+}
+.scrollbar::-webkit-scrollbar {
+  width: 14px;
+  transition: opacity 0.3s ease;
+  background-color: transparent;
+}
+.scrollbar::-webkit-scrollbar-track {
+  background: rgba(220, 220, 220, 0.5);
+  border-radius: 8px;
+}
+.scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 8px;
+  border: 1px solid rgba(220, 220, 220, 0.5); /* Отступ между бегунком и треком */
+}
+.scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(255, 255, 255); /* Цвет бегунка при наведении */
+}
+@media (max-width: 800px) {
+  .scrollbar::-webkit-scrollbar {
+    width: 0;
+  }
+}

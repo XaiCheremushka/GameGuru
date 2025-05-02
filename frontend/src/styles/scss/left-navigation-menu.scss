@@ -11,6 +11,10 @@
 
   background-color: colors.$navMenuBg;
   box-shadow: 0 4px 4px 4px rgba(0, 0, 0, 0.2);
+
+  @media(max-width: 800px) {
+    display: none;
+  }
 }
 
 .nav-menu {
