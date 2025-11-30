@@ -1,0 +1,95 @@
+@charset "UTF-8";
+/* frontend/src/styles/scss/mobile-navigation-menu.scss */
+/* Оверлей (фон) — по умолчанию скрыт, при добавлении класса .open становится видимым */
+.mobile-nav-overlay {
+  position: fixed;
+  inset: 0; /* top:0; right:0; bottom:0; left:0; */
+  background: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 200ms, visibility 200ms;
+  z-index: 1000;
+}
+.mobile-nav-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Панель меню снизу */
+.mobile-nav-panel {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transform: translateY(100%);
+  transition: transform 250ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  background: #ffffff;
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.12);
+  z-index: 1001;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  padding: 12px 16px;
+  /* уменьшение анимации для пользователей с `prefers-reduced-motion` */
+}
+.mobile-nav-panel.open {
+  transform: translateY(0%);
+}
+@media (prefers-reduced-motion: reduce) {
+  .mobile-nav-panel {
+    transition: none;
+    transform: none;
+  }
+}
+
+/* Хедер панели: заголовок и кнопка закрыть */
+.mobile-nav-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.mobile-nav-header strong {
+  font-size: 16px;
+  line-height: 1;
+  color: #111;
+}
+
+/* Кнопка закрыть */
+.mobile-nav-close {
+  background: transparent;
+  border: none;
+  font-size: 34px;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+  color: #222;
+}
+.mobile-nav-close:focus {
+  outline: 2px solid rgba(0, 0, 0, 0.12);
+  outline-offset: 2px;
+}
+
+/* Список ссылок */
+.mobile-nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mobile-nav-item {
+  margin-bottom: 8px;
+}
+
+/* Ссылка в пункте меню */
+.mobile-nav-link {
+  display: block;
+  padding: 10px 6px;
+  color: #111;
+  text-decoration: none;
+  font-size: 16px;
+  border-radius: 6px;
+}
+.mobile-nav-link:hover, .mobile-nav-link:focus {
+  background: rgba(0, 0, 0, 0.04);
+  outline: none;
+}

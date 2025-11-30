@@ -7,12 +7,48 @@
   background-color: colors.$headerBg;
 
   display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
+
+
+  .header-block {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    padding: 0 30px;
+
+  }
 }
 
 .header-icon-site {
   height: 90%;
   width: auto;
+}
+
+.item-buffer {
+  width: 30px;
+  height: 30px;
+  background: transparent;
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+.burger-mobile-nav-menu {
+  display: none;
+  background-color: transparent;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  border: none;
+
+  @media(max-width: 800px) {
+    display: flex;
+  }
+
+  .header-icon-menu {
+    height: 100%;
+    width: 100%;
+  }
 }

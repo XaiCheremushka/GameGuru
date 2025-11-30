@@ -1,5 +1,6 @@
 @charset "UTF-8";
 @import url("https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&family=Russo+One&display=swap");
+
 .home-page {
     position: relative;
     width: 100%;
@@ -11,8 +12,6 @@
 }
 
 .home-page .content {
-  
-  
     position: relative;
     z-index: 2;
     text-align: center;
@@ -21,13 +20,17 @@
 }
 
 .home-page .title-h1 {
-  font-family: "Russo One", Inter, sans-serif;
-  text-shadow: 0 4px 4px rgba(0, 0, 0, 0.5); /* Горизонталь Вертикаль Размытие Цвет */
-  letter-spacing: 3px;
+    font-family: "Russo One", Inter, sans-serif;
+    text-shadow: 0 4px 4px rgba(0, 0, 0, 0.5); /* Горизонталь Вертикаль Размытие Цвет */
+    letter-spacing: 3px;
     font-size: 64px;
     margin-bottom: 20px;
     /* text-shadow: 0 0 10px rgba(255, 255, 255, 0.3); */
     animation: fadeIn 1s ease-out;
+
+    @media (max-width: 500px) {
+        font-size: 36px;
+    }
 }
 
 .home-page .title-h2 {
@@ -38,7 +41,12 @@
     text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25); /* Горизонталь Вертикаль Размытие Цвет */
     /* text-shadow: 0 0 8px rgba(255, 255, 255, 0.2); */
     animation: fadeIn 1s ease-out 0.3s backwards;
+
+    @media (max-width: 500px) {
+        font-size: 14px;
+    }
 }
+
 
 @keyframes fadeIn {
     from {
