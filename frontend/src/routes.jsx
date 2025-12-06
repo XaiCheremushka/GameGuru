@@ -13,6 +13,7 @@ function RoutesApp() {
         <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/:pageType" element={<ListPageWrapper />} />
+            <Route path="/admin" element={<AdminPage />} />
         </Routes>
     )
 }

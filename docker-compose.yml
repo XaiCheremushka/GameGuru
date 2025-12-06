@@ -16,6 +16,38 @@ services:
       timeout: 5s
       retries: 10
 
+  # pgAdmin (опционально)
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "9090:80"
+    depends_on:
+      - postgres
+    networks:
+      - dbnet
+    env_file:
+      - .env
+
+  # PHP Backend
+  php-backend:
+    build: ./backend
+    image: gameguru-php-backend:v0.1
+    container_name: php-backend
+    restart: always
+    volumes:
+      - .env:/app/www/gameguru/backend/.env
+    depends_on:
+      - postgres
+    networks:
+      - dbnet
+    env_file:
+      - .env
+    expose:
+      - 9000
+
   nginx:
     image: nginx:1.29-alpine
     container_name: nginx
@@ -28,12 +60,15 @@ services:
       - "90:8090"
     volumes:
       - gameguru-static:/usr/share/nginx/html/static
-      - gameguru-uploads:/usr/share/nginx/html/uploads
-      - gameguru-logs:/app/www/gameguru/logs
+      - ./backend/uploads:/usr/share/nginx/html/uploads
+      - ./backend/storage/logs/nginx_logs:/app/www/gameguru/backend/storage/logs/nginx_logs
+      - ./backend/public:/app/www/gameguru/backend/public
       - ./nginx-global.conf:/etc/nginx/nginx.conf
       - ./default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - postgres
+      - php-backend
+      - react-builder
     cpus: "0.50"
 
   react-builder:
@@ -50,6 +85,4 @@ networks:
 
 volumes:
   gameguru-static:    # Только для React статики
-  gameguru-uploads:   # Пользовательские загрузки
   gameguru-data-db:   # Данные БД
-  gameguru-logs:      # Для логов
