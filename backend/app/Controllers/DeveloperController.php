@@ -3,8 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\DeveloperModel;
-use Response;
-
+use App\Utils\Response;
 class DeveloperController {
     private DeveloperModel $developerModel;
 

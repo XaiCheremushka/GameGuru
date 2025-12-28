@@ -2,22 +2,22 @@
 
 namespace App\Models;
 
-use Database;
+use App\Models\Database;
+use PDO;
 
 class GameModel {
-    private $db;
+    private PDO $db;
     private string $tableName = "games";
 
     public function __construct() {
-        $database = new Database();
-        $this->db = $database->getConnection();
+        $this->db = (new Database())->getConnection();
     }
 
     public function getAllGames() {
         $query = "SELECT * FROM " . $this->tableName;
         $stmt = $this->db->prepare($query);
         $stmt->execute();
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getGameById($id) {
@@ -25,7 +25,7 @@ class GameModel {
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':id', $id);
         $stmt->execute();
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
 }

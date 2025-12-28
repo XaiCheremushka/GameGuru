@@ -1,6 +1,13 @@
 <?php
+
+namespace App\Models;
+
+use PDO;
+use PDOException;
+use RuntimeException;
+
 class Database {
-    private $host;
+    private $host = "postgres";
     private $port = "5432";
     private $db_name;
     private $username;
@@ -10,11 +17,11 @@ class Database {
 
     // Конструктор
     public function __construct() {
-        $this->host = $_ENV['DB_HOST'];
-        $this->port = $_ENV['DB_PORT'];
-        $this->db_name = $_ENV['DB_NAME'];
-        $this->username = $_ENV['DB_USER'];
-        $this->password = $_ENV['DB_PASS'];
+//        $this->host     = $_ENV['DATABASE_HOST'];
+//        $this->port     = $_ENV['DATABASE_PORT'];
+        $this->db_name  = $_ENV['DATABASE_NAME'];
+        $this->username = $_ENV['DATABASE_USER'];
+        $this->password = $_ENV['DATABASE_PASSWORD'];
     }
 
     public function getConnection() {
@@ -26,7 +33,8 @@ class Database {
                 $this->password
             );
         } catch(PDOException $exception) {
-            dump("Connection DataBase error: {$exception->getMessage()}");
+            error_log("Database connection error: " . $exception->getMessage());
+            throw new RuntimeException('Database connection failed');
         }
         return $this->conn;
     }
