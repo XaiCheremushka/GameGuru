@@ -25,4 +25,37 @@ class GenreController {
             Response::error("Genre not found", 404);
         }
     }
+
+    public function store() {
+        $input = json_decode(file_get_contents('php://input'), true);
+        
+        if (!isset($input['name']) || !isset($input['slug'])) {
+            Response::error('Name and slug are required', 400);
+        }
+
+        $id = $this->genreModel->create($input);
+        $genre = $this->genreModel->getGenreById($id);
+        Response::json($genre, 201);
+    }
+
+    public function update($id) {
+        $input = json_decode(file_get_contents('php://input'), true);
+        
+        if (!$this->genreModel->getGenreById($id)) {
+            Response::error("Genre not found", 404);
+        }
+
+        $this->genreModel->update($id, $input);
+        $genre = $this->genreModel->getGenreById($id);
+        Response::json($genre);
+    }
+
+    public function destroy($id) {
+        if (!$this->genreModel->getGenreById($id)) {
+            Response::error("Genre not found", 404);
+        }
+
+        $this->genreModel->delete($id);
+        Response::json(['message' => 'Genre deleted successfully']);
+    }
 }

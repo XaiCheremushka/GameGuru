@@ -25,4 +25,37 @@ class CategoryController {
             Response::error("Category not found", 404);
         }
     }
+
+    public function store() {
+        $input = json_decode(file_get_contents('php://input'), true);
+        
+        if (!isset($input['name']) || !isset($input['slug'])) {
+            Response::error('Name and slug are required', 400);
+        }
+
+        $id = $this->categoryModel->create($input);
+        $category = $this->categoryModel->getCategoryById($id);
+        Response::json($category, 201);
+    }
+
+    public function update($id) {
+        $input = json_decode(file_get_contents('php://input'), true);
+        
+        if (!$this->categoryModel->getCategoryById($id)) {
+            Response::error("Category not found", 404);
+        }
+
+        $this->categoryModel->update($id, $input);
+        $category = $this->categoryModel->getCategoryById($id);
+        Response::json($category);
+    }
+
+    public function destroy($id) {
+        if (!$this->categoryModel->getCategoryById($id)) {
+            Response::error("Category not found", 404);
+        }
+
+        $this->categoryModel->delete($id);
+        Response::json(['message' => 'Category deleted successfully']);
+    }
 }

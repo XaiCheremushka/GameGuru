@@ -133,7 +133,7 @@ class ListPage extends React.Component {
         // При нажатии на кнопку сдвигаем весь div с карточками выше и увеличиваем высоту, чтобы карточка заняла весь экран
         const blockContent = document.querySelector(".content-element-list");
         if (!blockContent.classList.contains('single-card-mode')) {
-            const listTop = id*(150 + 10);
+            const listTop = (id-1)*(150 + 10);
             blockContent.style.setProperty(
                 '--list-top-position',
                 `${listTop}px`

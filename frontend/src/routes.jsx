@@ -2,6 +2,7 @@ import React from "react";
 import { Route, Routes, useParams } from "react-router-dom";
 import ClientBase from "./components/client/ClientBase.jsx";
 import AdminPage from "./pages/AdminPage.jsx";
+import AdminPageLogIn from "./pages/AdminPageLogIn.jsx";
 
 function ListPageWrapper() {
     const { pageType } = useParams();
@@ -18,6 +19,7 @@ function RoutesApp() {
         <Routes>
             <Route path="/" element={<ClientBase chapterMenu={"main"}/>} />
             <Route path="/:pageType" element={<ListPageWrapper />} />
+            <Route path="/admin/login" element={<AdminPageLogIn />} />
             <Route path="/admin" element={<AdminPage chapterMenu="dashboard" isAdminPage={true} />} />
             <Route path="/admin/:pageType" element={<AdminListPageWrapper />} />
         </Routes>
