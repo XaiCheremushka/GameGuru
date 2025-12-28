@@ -1,10 +1,10 @@
 
 import React from "react";
-import "../styles/css/header.css"
-import logo from "../assets/Logo.svg"
-import menu from "../assets/navigation/menu.svg"
+import "../../styles/css/header.css"
+import logo from "../../assets/Logo.svg"
+import menu from "../../assets/navigation/menu.svg"
 import {Link} from "react-router-dom";
-import MobileNavigationMenu from "./MobileNavigationMenu";
+import MobileNavigationMenu from "./MobileNavigationMenu.jsx";
 
 class Header extends React.Component {
     render() {

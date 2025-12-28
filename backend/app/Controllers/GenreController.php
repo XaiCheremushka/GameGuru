@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\GenreModel;
+use Response;
 
 class GenreController {
     private GenreModel $genreModel;

@@ -3,10 +3,12 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 header('Content-Type: application/json');
 
-// CORS headers для React приложения
-header('Access-Control-Allow-Origin: http://localhost:3000');
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
+//// CORS headers для React приложения
+//header('Access-Control-Allow-Origin: http://localhost:3000');
+//header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+//header('Access-Control-Allow-Headers: Content-Type, Authorization');
+
+echo "index.php works";
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
@@ -16,4 +18,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
 
-require_once __DIR__ . '/../routes/api.php';
+//require_once __DIR__ . '/../routes/helpers.php';
+//require_once __DIR__ . '/../routes/api.php';

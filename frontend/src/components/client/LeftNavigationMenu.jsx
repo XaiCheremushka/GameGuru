@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import "../styles/css/left-navigation-menu.css";
+import "../../styles/css/left-navigation-menu.css";
 
 class LeftNavigationMenu extends React.Component {
     render() {

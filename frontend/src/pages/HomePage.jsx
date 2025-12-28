@@ -1,5 +1,5 @@
 import React from "react";
-import AnimatedBackground from "../components/AnimatedBackground";
+import AnimatedBackground from "../components/client/AnimatedBackground.jsx";
 import "../styles/css/home-page.css"
 
 function HomePage() {

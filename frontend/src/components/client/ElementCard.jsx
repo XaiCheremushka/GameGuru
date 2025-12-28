@@ -1,6 +1,6 @@
 import React, {useState} from "react";
-import "../styles/css/element-card.css";
-import noPhoto from "../assets/items/No_photo.svg";
+import "../../styles/css/element-card.css";
+import noPhoto from "../../assets/items/No_photo.svg";
 
 
 const ElementCard = ({id, title, description, img, isActive, onClick}) => {

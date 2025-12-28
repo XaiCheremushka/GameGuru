@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import '../styles/css/mobile-navigation-menu.css';
+import '../../styles/css/mobile-navigation-menu.css';
 import {Link} from "react-router-dom";
 
 const LINKS = [

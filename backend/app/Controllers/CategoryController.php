@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\CategoryModel;
+use Response;
 
 class CategoryController {
     private CategoryModel $categoryModel;

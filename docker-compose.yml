@@ -30,6 +30,8 @@ services:
       - dbnet
     env_file:
       - .env
+    volumes:
+      - gameguru-pgadmin-data:/var/lib/pgadmin
 
   # PHP Backend
   php-backend:
@@ -39,6 +41,8 @@ services:
     restart: always
     volumes:
       - .env:/app/www/gameguru/backend/.env
+      - gameguru-backend:/app/www/gameguru/backend
+      - ./backend/uploads:/app/www/gameguru/backend/uploads
     depends_on:
       - postgres
     networks:
@@ -60,9 +64,9 @@ services:
       - "90:8090"
     volumes:
       - gameguru-static:/usr/share/nginx/html/static
+      - gameguru-backend:/app/www/gameguru/backend
       - ./backend/uploads:/usr/share/nginx/html/uploads
       - ./backend/storage/logs/nginx_logs:/app/www/gameguru/backend/storage/logs/nginx_logs
-      - ./backend/public:/app/www/gameguru/backend/public
       - ./nginx-global.conf:/etc/nginx/nginx.conf
       - ./default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
@@ -85,4 +89,6 @@ networks:
 
 volumes:
   gameguru-static:    # Только для React статики
+  gameguru-backend:   # Код бэкенда
   gameguru-data-db:   # Данные БД
+  gameguru-pgadmin-data: # Данные pgAdmin

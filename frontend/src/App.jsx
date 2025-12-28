@@ -1,7 +1,7 @@
 import React from "react";
 import {Outlet} from "react-router-dom";
-import Header from "./components/Header";
-import LeftNavigationMenu from "./components/LeftNavigationMenu";
+import Header from "./components/client/Header.jsx";
+import LeftNavigationMenu from "./components/client/LeftNavigationMenu.jsx";
 import RoutesApp from "./routes";
 
 import "./styles/css/general.css";
@@ -9,15 +9,9 @@ import "./styles/css/general.css";
 function App() {
     return (
         <div className="app">
-            <Header />
-            <div className="body-content">
-                <LeftNavigationMenu />
-                <main>
-                    <Outlet /> {/* Здесь будет меняться содержимое страниц */}
+            <Outlet /> {/* Здесь будет меняться содержимое страниц */}
 
-                    <RoutesApp />  {/* Добавляем роутер */}
-                </main>
-            </div>
+            <RoutesApp />  {/* Добавляем роутер */}
         </div>
     );
 }

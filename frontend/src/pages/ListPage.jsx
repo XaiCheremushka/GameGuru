@@ -1,5 +1,5 @@
 import React from "react";
-import ElementCard from "../components/ElementCard.jsx";
+import ElementCard from "../components/client/ElementCard.jsx";
 import { categoriesList, developersList, genresList, gamesList } from "../data/ListData.jsx";
 import "../styles/css/list-page.css";
 import "../styles/css/scrollbar.css";

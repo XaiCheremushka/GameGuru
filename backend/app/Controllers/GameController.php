@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\GameModel;
+use Response;
 
 class GameController {
     private GameModel $gameModel;
