@@ -5,7 +5,7 @@ import HomePage from "../../pages/HomePage.jsx";
 import ListPage from "../../pages/ListPage.jsx";
 
 
-function ClientBase({props}) {
+function ClientBase({chapterMenu}) {
     return (
         <>
             <Header/>
@@ -13,9 +13,9 @@ function ClientBase({props}) {
                 <LeftNavigationMenu />
                 <main>
                     {
-                        props.chapterMenu === "main" ?
+                        chapterMenu === "main" ?
                         <HomePage /> :
-                        <ListPage key={props.pageType} chapterMenu={props.pageType} />
+                        <ListPage key={chapterMenu} chapterMenu={chapterMenu} />
                     }
                 </main>
             </div>

@@ -1,7 +1,5 @@
 <?php
 
-echo "api.php works";
-
 $router = new \Bramus\Router\Router();
 
 $router->get('/api/v1/categories/?', controller('CategoryController@index'));
@@ -17,5 +15,3 @@ $router->get('/api/v1/games/?', controller('GameController@index'));
 $router->get('/api/v1/games/(\d+)/?', controller('GameController@show'));
 
 $router->run();
-
-echo "api.php runs";
