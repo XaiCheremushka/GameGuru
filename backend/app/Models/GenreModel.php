@@ -33,13 +33,29 @@ class GenreModel {
         $query = "INSERT INTO " . $this->tableName . " (name, slug, short_description, long_description, image) 
                   VALUES (:name, :slug, :short_description, :long_description, :image) RETURNING id";
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':name', $data['name']);
-        $stmt->bindParam(':slug', $data['slug']);
-        $stmt->bindParam(':short_description', $data['short_description'] ?? null);
-        $stmt->bindParam(':long_description', $data['long_description'] ?? null);
-        $stmt->bindParam(':image', $data['image'] ?? null);
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC)['id'];
+        
+        $name = $data['name'] ?? '';
+        $slug = $data['slug'] ?? '';
+        $shortDescription = (!empty($data['short_description'])) ? $data['short_description'] : null;
+        $longDescription = (!empty($data['long_description'])) ? $data['long_description'] : null;
+        $image = (!empty($data['image'])) ? $data['image'] : null;
+        
+        $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':slug', $slug);
+        $stmt->bindParam(':short_description', $shortDescription);
+        $stmt->bindParam(':long_description', $longDescription);
+        $stmt->bindParam(':image', $image);
+        
+        if (!$stmt->execute()) {
+            $errorInfo = $stmt->errorInfo();
+            throw new \Exception('Ошибка при создании жанра: ' . ($errorInfo[2] ?? 'Неизвестная ошибка'));
+        }
+        
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$result) {
+            throw new \Exception('Не удалось получить ID созданного жанра');
+        }
+        return $result['id'];
     }
 
     public function update($id, $data) {
@@ -48,13 +64,26 @@ class GenreModel {
                       long_description = :long_description, image = :image 
                   WHERE id = :id";
         $stmt = $this->db->prepare($query);
+        
+        $name = $data['name'] ?? '';
+        $slug = $data['slug'] ?? '';
+        $shortDescription = (!empty($data['short_description'])) ? $data['short_description'] : null;
+        $longDescription = (!empty($data['long_description'])) ? $data['long_description'] : null;
+        $image = (!empty($data['image'])) ? $data['image'] : null;
+        
         $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':name', $data['name']);
-        $stmt->bindParam(':slug', $data['slug']);
-        $stmt->bindParam(':short_description', $data['short_description'] ?? null);
-        $stmt->bindParam(':long_description', $data['long_description'] ?? null);
-        $stmt->bindParam(':image', $data['image'] ?? null);
-        return $stmt->execute();
+        $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':slug', $slug);
+        $stmt->bindParam(':short_description', $shortDescription);
+        $stmt->bindParam(':long_description', $longDescription);
+        $stmt->bindParam(':image', $image);
+        
+        if (!$stmt->execute()) {
+            $errorInfo = $stmt->errorInfo();
+            throw new \Exception('Ошибка при обновлении жанра: ' . ($errorInfo[2] ?? 'Неизвестная ошибка'));
+        }
+        
+        return true;
     }
 
     public function delete($id) {
