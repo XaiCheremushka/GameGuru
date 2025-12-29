@@ -90,6 +90,135 @@ class AuthController {
     }
 
     /**
+     * Редирект на Yandex OAuth (формируем URL и редиректим клиента)
+     */
+    public function yandexRedirect() {
+        $clientId = $_ENV['YANDEX_CLIENT_ID'] ?? null;
+        $redirectUri = $_ENV['YANDEX_REDIRECT_URI'] ?? null; // например https://your-backend.example.com/api/v1/auth/yandex/callback
+
+        if (!$clientId || !$redirectUri) {
+            Response::error('Настройки Yandex OAuth не заданы', 500);
+        }
+
+        $state = bin2hex(random_bytes(16));
+        // Можно сохранять state в сесии/БД при необходимости. Для простоты — без хранения.
+
+        $params = http_build_query([
+            'response_type' => 'code',
+            'client_id' => $clientId,
+            'redirect_uri' => $redirectUri,
+            'state' => $state,
+            'scope' => 'login:email login:info'
+        ]);
+
+        header('Location: https://oauth.yandex.ru/authorize?' . $params, true, 302);
+        exit;
+    }
+
+
+    public function yandexCallback() {
+        $code = $_GET['code'] ?? null;
+        $state = $_GET['state'] ?? null;
+
+        $clientId = $_ENV['YANDEX_CLIENT_ID'] ?? null;
+        $clientSecret = $_ENV['YANDEX_CLIENT_SECRET'] ?? null;
+        $redirectUri = $_ENV['YANDEX_REDIRECT_URI'] ?? null;
+
+        $frontendLoginUrl = $_ENV['FRONTEND_BASE_URL'] ?? null; // например https://your-frontend.example.com
+        if ($frontendLoginUrl) {
+            $frontendLoginUrl = rtrim($frontendLoginUrl, '/') . '/admin/login';
+        } else {
+            // fallback — относительный путь
+            $frontendLoginUrl = '/admin/login';
+        }
+
+        if (!$code || !$clientId || !$clientSecret || !$redirectUri) {
+            $err = urlencode('Неверный запрос от провайдера');
+            header("Location: {$frontendLoginUrl}?yandex_error={$err}", true, 302);
+            exit;
+        }
+
+        // Обмен кода на access_token
+        $tokenUrl = 'https://oauth.yandex.ru/token';
+        $postData = http_build_query([
+            'grant_type' => 'authorization_code',
+            'code' => $code,
+            'client_id' => $clientId,
+            'client_secret' => $clientSecret,
+            'redirect_uri' => $redirectUri
+        ]);
+
+        $opts = [
+            'http' => [
+                'method' => 'POST',
+                'header' => "Content-Type: application/x-www-form-urlencoded\r\n" .
+                            "Content-Length: " . strlen($postData) . "\r\n",
+                'content' => $postData,
+                'timeout' => 10
+            ]
+        ];
+
+        $context = stream_context_create($opts);
+        $result = @file_get_contents($tokenUrl, false, $context);
+        if ($result === false) {
+            $err = urlencode('Ошибка при обмене кода на токен');
+            header("Location: {$frontendLoginUrl}?yandex_error={$err}", true, 302);
+            exit;
+        }
+
+        $tokenResp = json_decode($result, true);
+        $accessToken = $tokenResp['access_token'] ?? null;
+        if (!$accessToken) {
+            $errMsg = $tokenResp['error_description'] ?? ($tokenResp['error'] ?? 'Не удалось получить access_token');
+            $err = urlencode($errMsg);
+            header("Location: {$frontendLoginUrl}?yandex_error={$err}", true, 302);
+            exit;
+        }
+
+        // Получим информацию о пользователе
+        $infoUrl = 'https://login.yandex.ru/info?format=json';
+        $opts = [
+            'http' => [
+                'method' => 'GET',
+                'header' => "Authorization: OAuth {$accessToken}\r\n",
+                'timeout' => 10
+            ]
+        ];
+        $context = stream_context_create($opts);
+        $infoResult = @file_get_contents($infoUrl, false, $context);
+        if ($infoResult === false) {
+            $err = urlencode('Не удалось получить информацию о пользователе');
+            header("Location: {$frontendLoginUrl}?yandex_error={$err}", true, 302);
+            exit;
+        }
+
+        $info = json_decode($infoResult, true);
+        $email = $info['default_email'] ?? $info['email'] ?? null;
+
+        if (!$email) {
+            $err = urlencode('Email не предоставлен провайдером');
+            header("Location: {$frontendLoginUrl}?yandex_error={$err}", true, 302);
+            exit;
+        }
+
+        // Проверяем, существует ли админ с таким email
+        $admin = $this->adminModel->findByEmail($email);
+        if (!$admin) {
+            $err = urlencode('Доступ запрещен. Ваш email не привязан к администратору.');
+            header("Location: {$frontendLoginUrl}?yandex_error={$err}", true, 302);
+            exit;
+        }
+
+        // Создадим JWT для админа
+        $token = $this->generateToken($admin['id'], $admin['email']);
+
+        // Редиректим на фронтенд страницу логина с токеном
+        $redirectUrl = $frontendLoginUrl . '?yandex_token=' . urlencode($token);
+        header("Location: {$redirectUrl}", true, 302);
+        exit;
+    }
+
+    /**
      * Сгенерировать JWT токен
      */
     private function generateToken(int $adminId, string $email): string {
@@ -107,4 +236,3 @@ class AuthController {
         return JWT::encode($payload, $this->jwtSecret, 'HS256');
     }
 }
-

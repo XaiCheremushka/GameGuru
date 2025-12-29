@@ -19,6 +19,10 @@ $router->get('/api/v1/games/(\d+)/?', controller('GameController@show'));
 $router->post('/api/v1/auth/login/?', controller('AuthController@login'));
 $router->get('/api/v1/auth/verify/?', controller('AuthController@verify'));
 
+// Добавляем маршруты для входа через Яндекс (OAuth)
+$router->get('/api/v1/auth/yandex/redirect/?', controller('AuthController@yandexRedirect'));
+$router->get('/api/v1/auth/yandex/callback/?', controller('AuthController@yandexCallback'));
+
 // Защищенные маршруты (требуют авторизации)
 // Категории
 $router->post('/api/v1/admin/categories/?', controller('CategoryController@store'));

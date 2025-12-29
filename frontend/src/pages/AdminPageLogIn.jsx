@@ -11,6 +11,41 @@ class AdminPageLogIn extends React.Component {
         loading: false
     };
 
+    componentDidMount() {
+        // Проверяем, пришёл ли редирект от Yandex с токеном или ошибкой
+        const params = new URLSearchParams(window.location.search);
+        const yandexToken = params.get('yandex_token');
+        const yandexError = params.get('yandex_error');
+
+        if (yandexError) {
+            // decodeURIComponent на случай, если сервер закодировал сообщение
+            this.setState({ error: decodeURIComponent(yandexError) });
+            // очищаем query string
+            try { window.history.replaceState({}, document.title, window.location.pathname); } catch (e) {}
+            return;
+        }
+
+        if (yandexToken) {
+            // Попробуем верифицировать токен у API и сохранить данные
+            this.setState({ loading: true, error: null });
+            apiService.verifyToken(yandexToken)
+                .then((response) => {
+                    // response может содержать { valid: true, admin: {...} } или { admin: {...} }
+                    const admin = response.admin || response.data?.admin || null;
+                    // Сохраняем токен и информацию об админе
+                    authService.setAuth(yandexToken, admin);
+                    // очищаем query string и переадресуем на админ-панель
+                    try { window.history.replaceState({}, document.title, window.location.pathname); } catch (e) {}
+                    window.location.href = '/admin';
+                })
+                .catch((err) => {
+                    console.error('Ошибка при верификации yandex token:', err);
+                    this.setState({ error: 'Ошибка при авторизации через Яндекс', loading: false });
+                    try { window.history.replaceState({}, document.title, window.location.pathname); } catch (e) {}
+                });
+        }
+    }
+
     handleChange = (e) => {
         this.setState({
             [e.target.name]: e.target.value,
@@ -31,10 +66,10 @@ class AdminPageLogIn extends React.Component {
 
         try {
             const response = await apiService.login(email, password);
-            
+
             // Сохранить токен и данные админа
             authService.setAuth(response.token, response.admin);
-            
+
             // Перенаправить на админ панель
             window.location.href = '/admin';
         } catch (error) {
@@ -46,6 +81,13 @@ class AdminPageLogIn extends React.Component {
                 loading: false 
             });
         }
+    };
+
+    // Новая функция: запуск OAuth через редирект на бэкенд
+    handleYandexLogin = (e) => {
+        e.preventDefault();
+        // Перенаправляем браузер на бэкенд, который делает редирект на Yandex
+        window.location.href = '/api/v1/auth/yandex/redirect';
     };
 
     render() {
@@ -62,7 +104,7 @@ class AdminPageLogIn extends React.Component {
                                     {error}
                                 </div>
                             )}
-                            
+
                             <div className="admin-login-field">
                                 <label htmlFor="email">Email</label>
                                 <input
@@ -98,6 +140,18 @@ class AdminPageLogIn extends React.Component {
                             >
                                 {loading ? 'Вход...' : 'Войти'}
                             </button>
+
+                            {/* Кнопка входа через Яндекс */}
+                            <div style={{ marginTop: '12px', textAlign: 'center' }}>
+                                <button
+                                    type="button"
+                                    className="admin-login-button admin-login-button-yandex"
+                                    onClick={this.handleYandexLogin}
+                                    disabled={loading}
+                                >
+                                    Войти через Яндекс
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -107,4 +161,3 @@ class AdminPageLogIn extends React.Component {
 }
 
 export default AdminPageLogIn;
-
