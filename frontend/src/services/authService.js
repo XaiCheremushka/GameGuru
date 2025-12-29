@@ -1,6 +1,3 @@
-/**
- * Сервис для работы с аутентификацией
- */
 
 const TOKEN_KEY = 'admin_token';
 const ADMIN_KEY = 'admin_data';

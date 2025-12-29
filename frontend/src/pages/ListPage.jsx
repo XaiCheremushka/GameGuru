@@ -65,19 +65,15 @@ class ListPage extends React.Component {
         }
     };
 
-    // Адаптер для преобразования данных из API в формат ElementCard
     adaptData = (data) => {
         if (!Array.isArray(data)) {
             return [];
         }
 
         return data.map((item) => {
-            // Определяем название 
             const title = item.name || item.title || 'Без названия';
             
-            // Определяем описание
             let description;
-            // Если есть short_description и long_description (формат API)
             if (item.short_description || item.long_description) {
                 description = {
                     short: item.short_description || item.long_description || 'Описание отсутствует',
@@ -106,10 +102,8 @@ class ListPage extends React.Component {
                 };
             }
 
-            // Определяем изображение (может быть image, image_url, img и т.д.)
             let img = item.image || item.image_url || item.img || null;
             
-            // Если есть путь к изображению, формируем полный URL
             if (img) {
                 if (img.startsWith('http://') || img.startsWith('https://')) {
                 }
@@ -153,7 +147,6 @@ class ListPage extends React.Component {
     render() {
         const { activeCardId, items, loading, error } = this.state;
 
-        // Показываем индикатор загрузки
         if (loading) {
             return (
                 <div className="content-element-list scrollbar">
@@ -168,7 +161,6 @@ class ListPage extends React.Component {
             );
         }
 
-        // Показываем ошибку
         if (error) {
             return (
                 <div className="content-element-list scrollbar">
@@ -183,7 +175,6 @@ class ListPage extends React.Component {
             );
         }
 
-        // Если данных нет
         if (!items || items.length === 0) {
             return (
                 <div className="content-element-list scrollbar">
