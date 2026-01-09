@@ -24,39 +24,17 @@ class ContentManager extends React.Component {
         this.loadItems();
     }
 
-    componentDidUpdate(prevProps) {
-        // Если изменился apiMethod (например, при смене вкладки), перезагружаем данные
-        if (prevProps.apiMethod !== this.props.apiMethod) {
-            this.loadItems();
-        }
-    }
-
     loadItems = async () => {
         const { apiMethod } = this.props;
         this.setState({ loading: true, error: null });
 
         try {
             const data = await apiMethod();
-            console.log('Загруженные данные:', data);
-            
-            // Обработка разных форматов ответа
-            let items = [];
-            if (Array.isArray(data)) {
-                items = data;
-            } else if (data && Array.isArray(data.data)) {
-                items = data.data;
-            } else if (data && data.data && typeof data.data === 'object') {
-                // Если data.data - это объект, попробуем извлечь массив
-                items = Object.values(data.data);
-            }
-            
-            console.log('Обработанные элементы:', items);
             this.setState({ 
-                items: items, 
+                items: Array.isArray(data) ? data : (data?.data || []), 
                 loading: false 
             });
         } catch (error) {
-            console.error('Ошибка при загрузке данных:', error);
             this.setState({ 
                 error: 'Ошибка при загрузке данных', 
                 loading: false 
@@ -125,40 +103,15 @@ class ContentManager extends React.Component {
         const { editingItem, formData } = this.state;
 
         try {
-            console.log('Сохранение данных:', { editingItem, formData });
-            
-            let result;
             if (editingItem) {
-                result = await updateMethod(editingItem.id, formData);
-                console.log('Результат обновления:', result);
+                await updateMethod(editingItem.id, formData);
             } else {
-                result = await createMethod(formData);
-                console.log('Результат создания:', result);
+                await createMethod(formData);
             }
-            
-            // Закрываем модальное окно
-            this.setState({ 
-                showModal: false, 
-                imagePreview: null,
-                editingItem: null 
-            });
-            
-            // Перезагружаем список сразу
-            await this.loadItems();
-            
-            console.log('Данные успешно сохранены и список обновлен');
+            this.setState({ showModal: false });
+            this.loadItems();
         } catch (error) {
-            console.error('Ошибка при сохранении:', error);
-            console.error('Детали ошибки:', {
-                response: error.response,
-                message: error.message,
-                data: error.response?.data
-            });
-            const errorMessage = error.response?.data?.data?.error || 
-                                error.response?.data?.error || 
-                                error.message || 
-                                'Ошибка при сохранении. Проверьте консоль для деталей.';
-            alert(errorMessage);
+            alert('Ошибка при сохранении');
         }
     };
 
