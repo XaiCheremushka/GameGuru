@@ -22,7 +22,7 @@
 /* Кнопка фильтров */
 .games-filter-button {
   position: fixed;
-  bottom: 20px;
+  bottom: calc(20px + env(safe-area-inset-bottom, 0));
   right: 20px;
   width: 56px;
   height: 56px;
@@ -79,12 +79,14 @@
   width: 100%;
   max-width: 400px;
   height: 100%;
-  max-height: 100vh;
+  max-height: calc(var(--vh, 1vh) * 100);
   display: flex;
   flex-direction: column;
   box-shadow: -4px 0 20px rgba(0, 0, 0, 0.2);
   animation: slideInRight 0.3s ease;
   overflow-y: auto;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
 }
 
 @keyframes slideInRight {
@@ -96,26 +98,13 @@
   }
 }
 
-.games-filter-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  border-bottom: 1px solid #e9ecef;
-  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-  color: white;
-}
-
-.games-filter-header h3 {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 600;
-}
-
 .games-filter-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
   background: none;
   border: none;
-  color: white;
+  color: #495057;
   font-size: 32px;
   cursor: pointer;
   padding: 0;
@@ -123,28 +112,40 @@
   height: 32px;
   line-height: 1;
   transition: transform 0.2s;
+  z-index: 10;
 }
 
 .games-filter-close:hover {
   transform: rotate(90deg);
+  color: #1e3c72;
 }
 
 .games-filter-content {
-  padding: 20px;
+  padding: 60px 20px 20px;
   flex: 1;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .games-filter-group {
   margin-bottom: 24px;
+  width: 100%;
+  max-width: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .games-filter-group label {
   display: block;
   margin-bottom: 8px;
   color: #495057;
-  font-weight: 500;
-  font-size: 14px;
+  font-weight: 700;
+  font-size: 16px;
+  text-align: center;
+  width: 100%;
 }
 
 .games-filter-input,
@@ -158,6 +159,32 @@
   box-sizing: border-box;
   transition: border-color 0.2s;
   background-color: white;
+  text-align: center;
+}
+
+.games-filter-search {
+  max-width: 320px;
+}
+
+.games-filter-search-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.games-filter-search-icon {
+  position: absolute;
+  left: 16px;
+  color: #6c757d;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.games-filter-search-input {
+  padding-left: 48px;
+  border-radius: 20px;
+  text-align: left;
 }
 
 .games-filter-input:focus,
@@ -174,6 +201,10 @@
   margin-top: 32px;
   padding-top: 20px;
   border-top: 1px solid #e9ecef;
+  width: 100%;
+  max-width: 280px;
+  display: flex;
+  justify-content: center;
 }
 
 .games-filter-reset {
@@ -197,8 +228,10 @@
 @media (max-width: 768px) {
   .games-filter-menu {
     max-width: 100%;
-    max-height: 80vh;
+    /* заменяем 80vh на переменную --vh */
+    max-height: calc(var(--vh, 1vh) * 80);
     border-radius: 20px 20px 0 0;
+    /* убираем явные border-top-left/bottom-left здесь — они уже заданы в основной секции */
     animation: slideInUp 0.3s ease;
   }
 
@@ -217,7 +250,7 @@
   }
 
   .games-filter-button {
-    bottom: 16px;
+    bottom: calc(16px + env(safe-area-inset-bottom, 0));
     right: 16px;
     width: 52px;
     height: 52px;

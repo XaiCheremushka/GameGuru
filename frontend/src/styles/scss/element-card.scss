@@ -20,6 +20,7 @@
   }
 }
 
+
 .img-element-card {
   display: flex;
   width: 30%;
@@ -99,6 +100,10 @@
     font-size: 16px;
     font-weight: 500;
     word-break: break-word; /* более мягкий вариант (предпочитает перенос по пробелам) */
+    text-indent: 1.2em; /* красная строка */
+    margin: 0 0 12px 0; /* расстояние между абзацами */
+    line-height: 1.5;
+    white-space: pre-wrap; /* сохраняет переносы внутри абзаца, если они есть */
   }
 }
 

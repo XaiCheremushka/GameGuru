@@ -392,20 +392,21 @@ class ListPage extends React.Component {
                         {showFilters && (
                             <div className="games-filter-overlay" onClick={this.toggleFilters}>
                                 <div className="games-filter-menu" onClick={(e) => e.stopPropagation()}>
-                                    <div className="games-filter-header">
-                                        <h3>Фильтры и поиск</h3>
-                                        <button className="games-filter-close" onClick={this.toggleFilters}>×</button>
-                                    </div>
+                                    <button className="games-filter-close" onClick={this.toggleFilters}>×</button>
                                     <div className="games-filter-content">
-                                        <div className="games-filter-group">
-                                            <label>Поиск</label>
-                                            <input
-                                                type="text"
-                                                placeholder="Введите название игры..."
-                                                value={searchQuery}
-                                                onChange={(e) => this.handleFilterChange('searchQuery', e.target.value)}
-                                                className="games-filter-input"
-                                            />
+                                        <div className="games-filter-group games-filter-search">
+                                            <div className="games-filter-search-wrapper">
+                                                <svg className="games-filter-search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                                </svg>
+                                                <input
+                                                    type="text"
+                                                    placeholder="Введите название игры..."
+                                                    value={searchQuery}
+                                                    onChange={(e) => this.handleFilterChange('searchQuery', e.target.value)}
+                                                    className="games-filter-input games-filter-search-input"
+                                                />
+                                            </div>
                                         </div>
                                         <div className="games-filter-group">
                                             <label>Жанр</label>

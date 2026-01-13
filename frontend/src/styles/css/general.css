@@ -1,3 +1,8 @@
+:root{
+  /* дефолтное значение, линтер требует определения переменной */
+  --vh: 1vh;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -16,10 +21,14 @@ body {
   display: flex;
   flex-direction: column;
   background-color: #3B4860;
-  height: 100vh;
-  width: 100vw;
-  overflow: hidden;
+  /* Используем динамическую переменную --vh, устанавливаемую в main.jsx */
+  height: calc(var(--vh, 1vh) * 100);
+  width: 100%;
+  /* Не скрываем скролл глобально — это мешает мобильным браузерам с полосой инструментов */
+  /* overflow: hidden; */
   box-sizing: border-box;
+  /* Учитываем безопасную зону на iOS (внизу) */
+  padding-bottom: env(safe-area-inset-bottom, 0);
 }
 body #root {
   display: flex;

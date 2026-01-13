@@ -10,6 +10,16 @@ const AnimatedBackground = () => {
         let animationFrameId;
         let time = 0;
 
+        // Определяем, является ли устройство мобильным
+        const isMobile = () => {
+            return window.innerWidth <= 768 ||
+                'ontouchstart' in window ||
+                navigator.maxTouchPoints > 0;
+        };
+
+        // Коэффициент замедления для мобильных устройств
+        const getSpeedFactor = () => isMobile() ? 0.5 : 1.0;
+
         // Устанавливаем размеры canvas
         const updateCanvasSize = () => {
             canvas.width = canvas.offsetWidth;
@@ -66,7 +76,8 @@ const AnimatedBackground = () => {
 
         // Функция отрисовки
         const draw = () => {
-            time += 0.026;
+            const speedFactor = getSpeedFactor();
+            time += 0.026 * speedFactor; // Замедляем общее время
 
             // Очищаем canvas
             ctx.fillStyle = 'transparent';
@@ -76,7 +87,7 @@ const AnimatedBackground = () => {
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
             const maxRadius = Math.max(canvas.width, canvas.height) * 0.4;
-            const scale = 0.8 + Math.sin(time * 0.5) * 0.2; // Пульсация от 0.6 до 1.0
+            const scale = 0.8 + Math.sin(time * 0.5 * speedFactor) * 0.2; // Замедляем пульсацию
             const currentRadius = maxRadius * scale;
 
             const gradient = ctx.createRadialGradient(
@@ -102,11 +113,11 @@ const AnimatedBackground = () => {
             ctx.arc(ball.x, ball.y, ball.size, 0, Math.PI * 2);
             ctx.fill();
 
-            // Обновляем позиции ракеток
-            leftPaddle.y = leftPaddle.baseY + Math.sin(time * 1.2) * (canvas.height * 0.35);
-            rightPaddle.y = rightPaddle.baseY + 
-                Math.sin(time * 1.8) * (canvas.height * 0.25) + 
-                Math.cos(time * 0.8) * (canvas.height * 0.15);
+            // Обновляем позиции ракеток с учетом коэффициента скорости
+            leftPaddle.y = leftPaddle.baseY + Math.sin(time * 1.3 ) * (canvas.height * 0.35);
+            rightPaddle.y = rightPaddle.baseY +
+                Math.sin(time * 1.9 ) * (canvas.height * 0.25) +
+                Math.cos(time * 0.9 ) * (canvas.height * 0.15);
 
             // Ограничиваем движение ракеток
             leftPaddle.y = Math.max(0, Math.min(canvas.height - paddleHeight, leftPaddle.y));
@@ -117,9 +128,9 @@ const AnimatedBackground = () => {
             drawRoundedRect(leftPaddle.x, leftPaddle.y, leftPaddle.width, leftPaddle.height, paddleRadius);
             drawRoundedRect(rightPaddle.x, rightPaddle.y, rightPaddle.width, rightPaddle.height, paddleRadius);
 
-            // Обновляем позицию мяча
-            ball.x += ball.dx;
-            ball.y += ball.dy;
+            // Обновляем позицию мяча с учетом коэффициента скорости
+            ball.x += ball.dx * speedFactor;
+            ball.y += ball.dy * speedFactor;
 
             // Отскок от верхней и нижней границы
             if (ball.y + ball.size > canvas.height || ball.y - ball.size < 0) {
@@ -129,11 +140,11 @@ const AnimatedBackground = () => {
             // Отскок от ракеток
             if (
                 (ball.x - ball.size < leftPaddle.x + leftPaddle.width &&
-                ball.y > leftPaddle.y && 
-                ball.y < leftPaddle.y + leftPaddle.height) ||
+                    ball.y > leftPaddle.y &&
+                    ball.y < leftPaddle.y + leftPaddle.height) ||
                 (ball.x + ball.size > rightPaddle.x &&
-                ball.y > rightPaddle.y &&
-                ball.y < rightPaddle.y + rightPaddle.height)
+                    ball.y > rightPaddle.y &&
+                    ball.y < rightPaddle.y + rightPaddle.height)
             ) {
                 ball.dx = -ball.dx;
             }
@@ -162,4 +173,4 @@ const AnimatedBackground = () => {
     );
 };
 
-export default AnimatedBackground; 
+export default AnimatedBackground;
