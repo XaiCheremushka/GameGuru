@@ -16,29 +16,79 @@ class ContentManager extends React.Component {
             slug: '',
             short_description: '',
             long_description: '',
-            image: ''
-        }
+            image: '',
+            developer_id: '',
+            genre_id: '',
+            category_id: ''
+        },
+        developers: [],
+        genres: [],
+        categories: []
     };
 
     componentDidMount() {
         this.loadItems();
+        // Загружаем справочники для игр
+        if (this.props.title === 'Игры') {
+            this.loadReferenceData();
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        // Перезагружаем данные при смене таба
+        if (prevProps.title !== this.props.title) {
+            this.loadItems();
+            if (this.props.title === 'Игры') {
+                this.loadReferenceData();
+            }
+        }
     }
 
     loadItems = async () => {
         const { apiMethod } = this.props;
+        if (!apiMethod) {
+            console.error('apiMethod не определен');
+            return;
+        }
+        
         this.setState({ loading: true, error: null });
 
         try {
             const data = await apiMethod();
+            const itemsArray = Array.isArray(data) ? data : (data?.data || []);
+            console.log('Загружено элементов:', itemsArray.length, itemsArray);
+            
+            // Принудительно обновляем состояние
             this.setState({ 
-                items: Array.isArray(data) ? data : (data?.data || []), 
-                loading: false 
+                items: itemsArray, 
+                loading: false,
+                error: null
+            }, () => {
+                console.log('Состояние обновлено, items:', this.state.items.length);
             });
         } catch (error) {
+            console.error('Ошибка при загрузке данных:', error);
             this.setState({ 
                 error: 'Ошибка при загрузке данных', 
                 loading: false 
             });
+        }
+    };
+
+    loadReferenceData = async () => {
+        try {
+            const [developers, genres, categories] = await Promise.all([
+                apiService.getDevelopers(),
+                apiService.getGenres(),
+                apiService.getCategories()
+            ]);
+            this.setState({
+                developers: Array.isArray(developers) ? developers : (developers?.data || []),
+                genres: Array.isArray(genres) ? genres : (genres?.data || []),
+                categories: Array.isArray(categories) ? categories : (categories?.data || [])
+            });
+        } catch (error) {
+            console.error('Ошибка при загрузке справочников:', error);
         }
     };
 
@@ -61,7 +111,10 @@ class ContentManager extends React.Component {
                 slug: '',
                 short_description: '',
                 long_description: '',
-                image: ''
+                image: '',
+                developer_id: '',
+                genre_id: '',
+                category_id: ''
             },
             showModal: true
         });
@@ -77,7 +130,10 @@ class ContentManager extends React.Component {
                 slug: item.slug || '',
                 short_description: item.short_description || '',
                 long_description: item.long_description || '',
-                image: item.image || ''
+                image: item.image || '',
+                developer_id: item.developer_id || '',
+                genre_id: item.genre_id || '',
+                category_id: item.category_id || ''
             },
             showModal: true
         });
@@ -103,15 +159,49 @@ class ContentManager extends React.Component {
         const { editingItem, formData } = this.state;
 
         try {
+            // Подготовка данных для отправки
+            const submitData = { ...formData };
+            
+            // Преобразуем пустые строки в null для внешних ключей
+            if (submitData.developer_id === '') submitData.developer_id = null;
+            if (submitData.genre_id === '') submitData.genre_id = null;
+            if (submitData.category_id === '') submitData.category_id = null;
+
+            let result;
             if (editingItem) {
-                await updateMethod(editingItem.id, formData);
+                console.log('Обновление элемента:', editingItem.id, submitData);
+                result = await updateMethod(editingItem.id, submitData);
             } else {
-                await createMethod(formData);
+                console.log('Создание нового элемента:', submitData);
+                result = await createMethod(submitData);
             }
-            this.setState({ showModal: false });
-            this.loadItems();
+            console.log('Результат сохранения:', result);
+            
+            // Перезагружаем данные ПЕРЕД закрытием модального окна
+            console.log('Перезагрузка данных после сохранения...');
+            await this.loadItems();
+            console.log('Данные перезагружены');
+            
+            // Закрываем модальное окно и сбрасываем форму ПОСЛЕ перезагрузки данных
+            this.setState({ 
+                showModal: false, 
+                imagePreview: null,
+                editingItem: null,
+                formData: {
+                    name: '',
+                    slug: '',
+                    short_description: '',
+                    long_description: '',
+                    image: '',
+                    developer_id: '',
+                    genre_id: '',
+                    category_id: ''
+                }
+            });
         } catch (error) {
-            alert('Ошибка при сохранении');
+            console.error('Ошибка при сохранении:', error);
+            const errorMessage = error?.response?.data?.data?.error || error?.response?.data?.error || error?.message || 'Ошибка при сохранении';
+            alert(errorMessage);
         }
     };
 
@@ -182,8 +272,8 @@ class ContentManager extends React.Component {
     };
 
     render() {
-        const { title, columns } = this.props;
-        const { items, loading, error, showModal, editingItem, formData } = this.state;
+        const { title, columns = [] } = this.props;
+        const { items = [], loading, error, showModal, editingItem, formData } = this.state;
 
         if (loading) {
             return <div className="admin-loading">Загрузка...</div>;
@@ -213,7 +303,7 @@ class ContentManager extends React.Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {items.length === 0 ? (
+                            {!items || items.length === 0 ? (
                                 <tr>
                                     <td colSpan={columns.length + 1} className="admin-empty">
                                         Нет данных
@@ -299,6 +389,49 @@ class ContentManager extends React.Component {
                                         rows="5"
                                     />
                                 </div>
+                                {this.props.title === 'Игры' && (
+                                    <>
+                                        <div className="admin-form-group">
+                                            <label>Разработчик</label>
+                                            <select
+                                                name="developer_id"
+                                                value={formData.developer_id}
+                                                onChange={this.handleInputChange}
+                                            >
+                                                <option value="">Не выбран</option>
+                                                {this.state.developers.map(dev => (
+                                                    <option key={dev.id} value={dev.id}>{dev.name}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                        <div className="admin-form-group">
+                                            <label>Жанр</label>
+                                            <select
+                                                name="genre_id"
+                                                value={formData.genre_id}
+                                                onChange={this.handleInputChange}
+                                            >
+                                                <option value="">Не выбран</option>
+                                                {this.state.genres.map(genre => (
+                                                    <option key={genre.id} value={genre.id}>{genre.name}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                        <div className="admin-form-group">
+                                            <label>Категория</label>
+                                            <select
+                                                name="category_id"
+                                                value={formData.category_id}
+                                                onChange={this.handleInputChange}
+                                            >
+                                                <option value="">Не выбрана</option>
+                                                {this.state.categories.map(cat => (
+                                                    <option key={cat.id} value={cat.id}>{cat.name}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    </>
+                                )}
                                 <div className="admin-form-group">
                                     <label>Изображение</label>
                                     <input

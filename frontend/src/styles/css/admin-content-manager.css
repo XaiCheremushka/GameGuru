@@ -184,7 +184,8 @@
 }
 
 .admin-form-group input,
-.admin-form-group textarea {
+.admin-form-group textarea,
+.admin-form-group select {
     width: 100%;
     padding: 12px;
     border: 2px solid #e9ecef;
@@ -193,6 +194,13 @@
     transition: border-color 0.2s;
     font-family: inherit;
     box-sizing: border-box;
+    background-color: white;
+    cursor: pointer;
+}
+
+.admin-form-group select:focus {
+    outline: none;
+    border-color: #1e3c72;
 }
 
 .admin-form-group input:focus,

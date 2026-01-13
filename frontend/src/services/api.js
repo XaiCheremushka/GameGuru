@@ -12,6 +12,62 @@ const apiClient = axios.create({
 });
 
 /**
+ * Вспомогательная функция для админ запросов с авторизацией
+ */
+const _adminRequest = async (method, url, data = null) => {
+  const token = localStorage.getItem('admin_token');
+  if (!token) {
+    throw new Error('Токен не найден');
+  }
+
+  const config = {
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    }
+  };
+
+  try {
+    let response;
+    switch (method.toLowerCase()) {
+      case 'post':
+        response = await apiClient.post(url, data, config);
+        break;
+      case 'put':
+        response = await apiClient.put(url, data, config);
+        break;
+      case 'delete':
+        response = await apiClient.delete(url, config);
+        break;
+      default:
+        throw new Error(`Неподдерживаемый метод: ${method}`);
+    }
+    return response.data?.data || response.data;
+  } catch (error) {
+    console.error(`Ошибка при ${method} запросе:`, error);
+    
+    // Улучшенная обработка ошибок
+    if (error.response) {
+      // Сервер ответил с кодом ошибки
+      const errorData = error.response.data;
+      const errorMessage = errorData?.data?.error || errorData?.error || error.message || 'Ошибка при выполнении запроса';
+      
+      // Создаем новую ошибку с понятным сообщением
+      const customError = new Error(errorMessage);
+      customError.response = error.response;
+      customError.status = error.response.status;
+      throw customError;
+    } else if (error.request) {
+      // Запрос был отправлен, но ответа не получено
+      throw new Error('Сервер не отвечает. Проверьте подключение к интернету.');
+    } else {
+      // Ошибка при настройке запроса
+      throw error;
+    }
+  }
+};
+
+/**
  * API сервис для работы с категориями, жанрами, разработчиками и играми
  */
 export const apiService = {
@@ -161,85 +217,85 @@ export const apiService = {
   /**
    * Создать категорию
    */
-  async createCategory(data) {
-    return this._adminRequest('post', '/admin/categories', data);
+  createCategory: async (data) => {
+    return _adminRequest('post', '/admin/categories', data);
   },
 
   /**
    * Обновить категорию
    */
-  async updateCategory(id, data) {
-    return this._adminRequest('put', `/admin/categories/${id}`, data);
+  updateCategory: async (id, data) => {
+    return _adminRequest('put', `/admin/categories/${id}`, data);
   },
 
   /**
    * Удалить категорию
    */
-  async deleteCategory(id) {
-    return this._adminRequest('delete', `/admin/categories/${id}`);
+  deleteCategory: async (id) => {
+    return _adminRequest('delete', `/admin/categories/${id}`);
   },
 
   /**
    * Создать жанр
    */
-  async createGenre(data) {
-    return this._adminRequest('post', '/admin/genres', data);
+  createGenre: async (data) => {
+    return _adminRequest('post', '/admin/genres', data);
   },
 
   /**
    * Обновить жанр
    */
-  async updateGenre(id, data) {
-    return this._adminRequest('put', `/admin/genres/${id}`, data);
+  updateGenre: async (id, data) => {
+    return _adminRequest('put', `/admin/genres/${id}`, data);
   },
 
   /**
    * Удалить жанр
    */
-  async deleteGenre(id) {
-    return this._adminRequest('delete', `/admin/genres/${id}`);
+  deleteGenre: async (id) => {
+    return _adminRequest('delete', `/admin/genres/${id}`);
   },
 
   /**
    * Создать разработчика
    */
-  async createDeveloper(data) {
-    return this._adminRequest('post', '/admin/developers', data);
+  createDeveloper: async (data) => {
+    return _adminRequest('post', '/admin/developers', data);
   },
 
   /**
    * Обновить разработчика
    */
-  async updateDeveloper(id, data) {
-    return this._adminRequest('put', `/admin/developers/${id}`, data);
+  updateDeveloper: async (id, data) => {
+    return _adminRequest('put', `/admin/developers/${id}`, data);
   },
 
   /**
    * Удалить разработчика
    */
-  async deleteDeveloper(id) {
-    return this._adminRequest('delete', `/admin/developers/${id}`);
+  deleteDeveloper: async (id) => {
+    return _adminRequest('delete', `/admin/developers/${id}`);
   },
 
   /**
    * Создать игру
    */
-  async createGame(data) {
-    return this._adminRequest('post', '/admin/games', data);
+  createGame: async (data) => {
+    return _adminRequest('post', '/admin/games', data);
   },
 
   /**
    * Обновить игру
    */
-  async updateGame(id, data) {
-    return this._adminRequest('put', `/admin/games/${id}`, data);
+  updateGame: async (id, data) => {
+    return _adminRequest('put', `/admin/games/${id}`, data);
   },
 
   /**
    * Удалить игру
    */
-  async deleteGame(id) {
-    return this._adminRequest('delete', `/admin/games/${id}`);
+  deleteGame: async (id) => {
+    return _adminRequest('delete', `/admin/games/${id}`);
   },
 
   /**
@@ -268,43 +324,6 @@ export const apiService = {
     }
   },
 
-  /**
-   * Вспомогательный метод для админ запросов с авторизацией
-   */
-  async _adminRequest(method, url, data = null) {
-    const token = localStorage.getItem('admin_token');
-    if (!token) {
-      throw new Error('Токен не найден');
-    }
-
-    const config = {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      }
-    };
-
-    try {
-      let response;
-      switch (method.toLowerCase()) {
-        case 'post':
-          response = await apiClient.post(url, data, config);
-          break;
-        case 'put':
-          response = await apiClient.put(url, data, config);
-          break;
-        case 'delete':
-          response = await apiClient.delete(url, config);
-          break;
-        default:
-          throw new Error(`Неподдерживаемый метод: ${method}`);
-      }
-      return response.data?.data || response.data;
-    } catch (error) {
-      console.error(`Ошибка при ${method} запросе:`, error);
-      throw error;
-    }
-  },
 };
 
 export default apiService;

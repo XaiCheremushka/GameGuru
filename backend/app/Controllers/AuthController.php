@@ -72,10 +72,10 @@ class AuthController {
 
         try {
             $decoded = JWT::decode($token, new Key($this->jwtSecret, 'HS256'));
-            
+
             // Получить информацию об админе
             $admin = $this->adminModel->findById($decoded->admin_id);
-            
+
             if (!$admin) {
                 Response::error('Админ не найден', 401);
             }
@@ -152,7 +152,7 @@ class AuthController {
             'http' => [
                 'method' => 'POST',
                 'header' => "Content-Type: application/x-www-form-urlencoded\r\n" .
-                            "Content-Length: " . strlen($postData) . "\r\n",
+                    "Content-Length: " . strlen($postData) . "\r\n",
                 'content' => $postData,
                 'timeout' => 10
             ]

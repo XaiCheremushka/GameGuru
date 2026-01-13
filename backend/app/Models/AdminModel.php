@@ -42,4 +42,3 @@ class AdminModel {
         return password_verify($password, $hash);
     }
 }
-
