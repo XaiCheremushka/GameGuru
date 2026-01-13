@@ -1,4 +1,4 @@
-
+// frontend/src/components/client/Header.jsx
 import React from "react";
 import "../../styles/css/header.css"
 import logo from "../../assets/Logo.svg"
@@ -13,9 +13,9 @@ class Header extends React.Component {
                 <div className="header-wrapper">
                     <div className="header-block">
                         <div className={'item-buffer'}></div>
-                        <Link to="/"><img src={logo} alt="Logo" className="header-icon-site"/></Link>
+                        <Link to="/" title="На главную"><img src={logo} alt="Logo" className="header-icon-site"/></Link>
                         <div className={'item-buffer'}>
-                            <button className={'burger-mobile-nav-menu'}>
+                            <button className={'burger-mobile-nav-menu'} title="Открыть меню" aria-label="Открыть меню">
                                 <img src={menu} alt="Menu" className="header-icon-menu"/>
                             </button>
                         </div>

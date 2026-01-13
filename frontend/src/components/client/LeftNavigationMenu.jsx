@@ -10,16 +10,16 @@ class LeftNavigationMenu extends React.Component {
             <div id="left-navigation-menu">
                 <ul className="nav-menu">
                     <li className={`nav-menu-element ${pathname === '/categories' ? 'menu-element--active' : ''}`}>
-                        <Link to="/categories">Категории</Link>
+                        <Link to="/categories" title="Категории">Категории</Link>
                     </li>
                     <li className={`nav-menu-element ${pathname === '/genres' ? 'menu-element--active' : ''}`}>
-                        <Link to="/genres">Жанры</Link>
+                        <Link to="/genres" title="Жанры">Жанры</Link>
                     </li>
                     <li className={`nav-menu-element ${pathname === '/developers' ? 'menu-element--active' : ''}`}>
-                        <Link to="/developers">Разработчики</Link>
+                        <Link to="/developers" title="Разработчики">Разработчики</Link>
                     </li>
                     <li className={`nav-menu-element ${pathname === '/games' ? 'menu-element--active' : ''}`}>
-                        <Link to="/games">Игры</Link>
+                        <Link to="/games" title="Игры">Игры</Link>
                     </li>
                 </ul>
             </div>

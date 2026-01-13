@@ -13,12 +13,38 @@ class AdminPage extends React.Component {
     };
 
     componentDidMount() {
+        this.setPageMeta(this.state.activeTab);
         this.checkAuth();
     }
 
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.activeTab !== this.state.activeTab) {
+            this.setPageMeta(this.state.activeTab);
+        }
+    }
+
+    setPageMeta = (tabId) => {
+        const map = {
+            categories: { title: "Админ — Категории — GameGuru", description: "Управление категориями сайта GameGuru." },
+            genres: { title: "Админ — Жанры — GameGuru", description: "Управление жанрами игр в админ-панели GameGuru." },
+            developers: { title: "Админ — Разработчики — GameGuru", description: "Управление разработчиками игр в админ-панели GameGuru." },
+            games: { title: "Админ — Игры — GameGuru", description: "Управление карточками игр в админ-панели GameGuru." },
+            dashboard: { title: "Админ панель — GameGuru", description: "Панель администратора сайта GameGuru." }
+        };
+        const meta = map[tabId] || map.dashboard;
+        document.title = meta.title;
+        let tag = document.querySelector('meta[name="description"]');
+        if (!tag) {
+            tag = document.createElement('meta');
+            tag.name = 'description';
+            document.head.appendChild(tag);
+        }
+        tag.setAttribute('content', meta.description);
+    };
+
     checkAuth = async () => {
         const token = authService.getToken();
-        
+
         if (!token) {
             window.location.href = '/admin/login';
             return;
@@ -75,8 +101,8 @@ class AdminPage extends React.Component {
                 { key: 'id', label: 'ID' },
                 { key: 'name', label: 'Название' },
                 { key: 'slug', label: 'Slug' },
-                { 
-                    key: 'short_description', 
+                {
+                    key: 'short_description',
                     label: 'Описание',
                     render: (value) => value ? (value.length > 50 ? value.substring(0, 50) + '...' : value) : '-'
                 }
@@ -85,8 +111,8 @@ class AdminPage extends React.Component {
                 { key: 'id', label: 'ID' },
                 { key: 'name', label: 'Название' },
                 { key: 'slug', label: 'Slug' },
-                { 
-                    key: 'short_description', 
+                {
+                    key: 'short_description',
                     label: 'Описание',
                     render: (value) => value ? (value.length > 50 ? value.substring(0, 50) + '...' : value) : '-'
                 }
@@ -95,8 +121,8 @@ class AdminPage extends React.Component {
                 { key: 'id', label: 'ID' },
                 { key: 'name', label: 'Название' },
                 { key: 'slug', label: 'Slug' },
-                { 
-                    key: 'short_description', 
+                {
+                    key: 'short_description',
                     label: 'Описание',
                     render: (value) => value ? (value.length > 50 ? value.substring(0, 50) + '...' : value) : '-'
                 }
@@ -105,8 +131,8 @@ class AdminPage extends React.Component {
                 { key: 'id', label: 'ID' },
                 { key: 'name', label: 'Название' },
                 { key: 'slug', label: 'Slug' },
-                { 
-                    key: 'short_description', 
+                {
+                    key: 'short_description',
                     label: 'Описание',
                     render: (value) => value ? (value.length > 50 ? value.substring(0, 50) + '...' : value) : '-'
                 }
@@ -123,9 +149,10 @@ class AdminPage extends React.Component {
                         )}
                     </div>
                     <div className="admin-header-actions">
-                        <button 
+                        <button
                             className="admin-logout-btn"
                             onClick={this.handleLogout}
+                            title="Выйти из админ панели"
                         >
                             Выйти
                         </button>
@@ -138,6 +165,7 @@ class AdminPage extends React.Component {
                             <li key={tab.id} className="admin-nav-item">
                                 <a
                                     href="#"
+                                    title={`Перейти к ${tab.label}`}
                                     className={`admin-nav-link ${activeTab === tab.id ? 'active' : ''}`}
                                     onClick={(e) => {
                                         e.preventDefault();

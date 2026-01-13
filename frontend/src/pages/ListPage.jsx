@@ -6,13 +6,12 @@ import "../styles/css/scrollbar.css";
 
 class ListPage extends React.Component {
     state = {
-        activeCardId: null, // Храним ID активной карточки
-        items: [], // Данные, загруженные с сервера
-        loading: true, // Состояние загрузки
-        error: null // Ошибка загрузки
+        activeCardId: null,
+        items: [],
+        loading: true,
+        error: null
     };
 
-    // Маппинг типов данных на методы API
     apiMethods = {
         categories: apiService.getCategories,
         genres: apiService.getGenres,
@@ -21,25 +20,57 @@ class ListPage extends React.Component {
     };
 
     componentDidMount() {
+        this.setPageMeta(this.props.chapterMenu);
         this.loadData();
     }
 
     componentDidUpdate(prevProps) {
-        // Если изменился тип данных (categories/genres/developers/games), загружаем новые данные
         if (prevProps.chapterMenu !== this.props.chapterMenu) {
+            this.setPageMeta(this.props.chapterMenu);
             this.loadData();
         }
     }
+
+    setPageMeta = (chapter) => {
+        const mapping = {
+            categories: {
+                title: "Категории — GameGuru",
+                description: "Категории игр на GameGuru: удобная навигация по типам и подборкам."
+            },
+            genres: {
+                title: "Жанры — GameGuru",
+                description: "Жанры игр: экшен, RPG, стратегия и другие — подборки и описания."
+            },
+            developers: {
+                title: "Разработчики — GameGuru",
+                description: "Разработчики игр: информация о студиях и авторах проектов."
+            },
+            games: {
+                title: "Игры — GameGuru",
+                description: "Список игр: описания, изображения и ссылки на дополнительные материалы."
+            }
+        };
+
+        const meta = mapping[chapter] || { title: "GameGuru", description: "Каталог компьютерных игр." };
+        document.title = meta.title;
+        let tag = document.querySelector('meta[name="description"]');
+        if (!tag) {
+            tag = document.createElement('meta');
+            tag.name = 'description';
+            document.head.appendChild(tag);
+        }
+        tag.setAttribute('content', meta.description);
+    };
 
     loadData = async () => {
         const { chapterMenu } = this.props;
         const apiMethod = this.apiMethods[chapterMenu];
 
         if (!apiMethod) {
-            this.setState({ 
-                items: [], 
-                loading: false, 
-                error: 'Неизвестный тип данных' 
+            this.setState({
+                items: [],
+                loading: false,
+                error: 'Неизвестный тип данных'
             });
             return;
         }
@@ -48,19 +79,18 @@ class ListPage extends React.Component {
 
         try {
             const data = await apiMethod();
-            // Преобразуем данные из API в формат, который ожидает ElementCard
             const adaptedData = this.adaptData(data);
-            this.setState({ 
-                items: adaptedData, 
-                loading: false, 
-                error: null 
+            this.setState({
+                items: adaptedData,
+                loading: false,
+                error: null
             });
         } catch (error) {
             console.error('Ошибка загрузки данных:', error);
-            this.setState({ 
-                items: [], 
-                loading: false, 
-                error: 'Не удалось загрузить данные с сервера' 
+            this.setState({
+                items: [],
+                loading: false,
+                error: 'Не удалось загрузить данные с сервера'
             });
         }
     };
@@ -72,30 +102,24 @@ class ListPage extends React.Component {
 
         return data.map((item) => {
             const title = item.name || item.title || 'Без названия';
-            
+
             let description;
             if (item.short_description || item.long_description) {
                 description = {
                     short: item.short_description || item.long_description || 'Описание отсутствует',
                     full: item.long_description || item.short_description || 'Описание отсутствует'
                 };
-            }
-            // Если описание уже объект с short/full
-            else if (typeof item.description === 'object' && item.description !== null) {
+            } else if (typeof item.description === 'object' && item.description !== null) {
                 description = item.description;
-            }
-            // Если описание строка
-            else if (typeof item.description === 'string') {
-                const shortDesc = item.description.length > 100 
-                    ? item.description.substring(0, 100) + '...' 
+            } else if (typeof item.description === 'string') {
+                const shortDesc = item.description.length > 100
+                    ? item.description.substring(0, 100) + '...'
                     : item.description;
                 description = {
                     short: shortDesc,
                     full: item.description
                 };
-            }
-            // Если описания нет
-            else {
+            } else {
                 description = {
                     short: 'Описание отсутствует',
                     full: 'Описание отсутствует'
@@ -103,7 +127,7 @@ class ListPage extends React.Component {
             }
 
             let img = item.image || item.image_url || item.img || null;
-            
+
             if (img) {
                 if (img.startsWith('http://') || img.startsWith('https://')) {
                 }
@@ -124,7 +148,6 @@ class ListPage extends React.Component {
     };
 
     handleCardClick = (id) => {
-        // При нажатии на кнопку сдвигаем весь div с карточками выше и увеличиваем высоту, чтобы карточка заняла весь экран
         const blockContent = document.querySelector(".content-element-list");
         if (!blockContent.classList.contains('single-card-mode')) {
             const listTop = (id-1)*(150 + 10);
@@ -150,8 +173,8 @@ class ListPage extends React.Component {
         if (loading) {
             return (
                 <div className="content-element-list scrollbar">
-                    <div style={{ 
-                        padding: '20px', 
+                    <div style={{
+                        padding: '20px',
                         textAlign: 'center',
                         color: '#fff'
                     }}>
@@ -164,8 +187,8 @@ class ListPage extends React.Component {
         if (error) {
             return (
                 <div className="content-element-list scrollbar">
-                    <div style={{ 
-                        padding: '20px', 
+                    <div style={{
+                        padding: '20px',
                         textAlign: 'center',
                         color: '#ff6b6b'
                     }}>
@@ -178,8 +201,8 @@ class ListPage extends React.Component {
         if (!items || items.length === 0) {
             return (
                 <div className="content-element-list scrollbar">
-                    <div style={{ 
-                        padding: '20px', 
+                    <div style={{
+                        padding: '20px',
                         textAlign: 'center',
                         color: '#fff'
                     }}>

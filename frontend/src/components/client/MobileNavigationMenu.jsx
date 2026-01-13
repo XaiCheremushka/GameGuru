@@ -51,6 +51,7 @@ export default function MobileNavigationMenu() {
                             <Link
                                 to={item.href}
                                 className="mobile-nav-link"
+                                title={item.label}
                                 onClick={close}>{item.label}</Link>
                         </li>
                     ))}
